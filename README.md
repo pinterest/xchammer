@@ -30,7 +30,7 @@ FAQ](Docs/XCHammerFAQ.md). To learn more about Bazel, see [Bazel for iOS
 developers](Docs/BazelForiOSDevelopers.md). To learn about how Pinterest uses
 XCHammer see [Introducing
 XCHammer](Docs/FastAndReproducibleBuildsWithXCHammer.md) and [Pinterest Focused
-Xcode Projects](PinterestFocusedXcodeProjects.md)_
+Xcode Projects](Docs/PinterestFocusedXcodeProjects.md)_
 
 ### Installation
 

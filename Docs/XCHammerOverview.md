@@ -55,9 +55,9 @@ XcodeGen, XCHammer is overall easier to maintain and update across Bazel and
 Xcode updates.
 
 Please see the document [Bazel for iOS
-developers](Docs/BazelForiOSDevelopers.md) to learn more about the common
+developers](BazelForiOSDevelopers.md) to learn more about the common
 interfaces that XCHammer uses. The segment [Xcode Project
-generators](Docs/BazelForiOSDevelopers.md#generated-xcode-projects) provides an
+generators](BazelForiOSDevelopers.md#generated-xcode-projects) provides an
 high level overview of such an architecture and how an aspects and rule fit
 together with Bazel and how Xcode is integrated with Bazel.
 
@@ -77,10 +77,10 @@ xcode_project(
 ```
 
 The rule `xcode_project` invokes the [XCHammer
-binary](Sources/XCHammer/main.swift) with arguments including a json
-representation of [XCHammerConfig](Sources/XCHammer/XCHammerConfig.swift) and a
+binary](../Sources/XCHammer/main.swift) with arguments including a json
+representation of [XCHammerConfig](../Sources/XCHammer/XCHammerConfig.swift) and a
 json represention of
-[XcodeProjectRuleInfo](Sources/XCHammer/XCHammerGenerateOptions.swift). Inside
+[XcodeProjectRuleInfo](../Sources/XCHammer/XCHammerGenerateOptions.swift). Inside
 of the main function is where the main logic of generating an Xcode project
 exists. 
 
@@ -95,7 +95,7 @@ of the rule only_
 
 ## Sources Aspect
 
-The rule, [`xcode_project`](BazelExtensions/xcodeproject.bzl) accepts 2
+The rule, [`xcode_project`](../BazelExtensions/xcodeproject.bzl) accepts 2
 different aspects for the users specified target. 
 
 First, and most involved, is the `tulsi_sources_aspect`. This aspect is used to
@@ -123,7 +123,7 @@ grew in complexity and features. The main issue was having to set many kinds of
 options in Xcode for each target. For example, a project may have different
 environment variables in the scheme and vary on each target. Another example,
 is [bolting on xcode project
-instrumentation](Docs/PinterestFocusedXcodeProjects.md) in order to track local
+instrumentation](PinterestFocusedXcodeProjects.md) in order to track local
 build times in Xcode with statsd. At one point, the `XCHammerConfig` was too
 complex and unmaintainable. This aspect was created to setup Xcode target
 metadata adjacent to the rules.
@@ -203,7 +203,7 @@ focus on the problem at hand. By using XcodeGen, it's straight forward to
 generate an Xcode project that _just works_ with or without Bazel.
 
 For information about how Xcode runs Bazel builds, see [Xcode Project
-generators](Docs/BazelForiOSDevelopers.md#generated-xcode-projects)
+generators](BazelForiOSDevelopers.md#generated-xcode-projects)
 
 ## Examples of common problems and how they were fixed
 
@@ -219,7 +219,7 @@ Xcode configuration files and there is no defaults enforced.
 In vanilla Bazel usage, a similar problem exists  when the user is allowed to
 specificy `copts`. Therefore, a simple system of macros is implemented in order
 to prevent users from configuring `copts` in an unexpected way. See the segment
-[marcos](Docs/BazelForiOSDevelopers.md#macros) for a complete listing.
+[marcos](BazelForiOSDevelopers.md#macros) for a complete listing.
 Recently, there has been work on Bazel to extract the native rules. Note, that
 the Bazel toolchain is orthogonal to using macros to wrap rules
 [rules_cc](https://github.com/bazelbuild/rules_cc).
@@ -243,6 +243,6 @@ solves the problem of being able to build the app with Xcode.
 When Xcode projects grown in size and scope, the IDE experience starts to
 degrade. By default Xcode ends up indexing the entire source tree which hogs CPU
 resources and slows down autocomplete. The document, [Pinterest Focused Xcode
-Projects](Docs/PinterestFocusedXcodeProjects.md) explains how Bazel and XCHammer
+Projects](PinterestFocusedXcodeProjects.md) explains how Bazel and XCHammer
 are used to solve this problem and reduce the load by orders of magnitude.
 

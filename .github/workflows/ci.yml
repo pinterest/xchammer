@@ -9,6 +9,10 @@ jobs:
     steps:
     - name: Checkout the Git repository
       uses: actions/checkout@v1
+    - name: Initial setup
+      run: ./taskfile setup
+    - name: Check documentation links
+      run: ./taskfile checkDocumentationLinks ${{ github.sha }}
     - name: Setup dependencies 
       run: sudo gem install cocoapods 
     - name: Run Tests

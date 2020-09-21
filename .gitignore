@@ -26,3 +26,4 @@ external
 *.swp
 
 xchammer-includes
+vendor/bundle

@@ -1,0 +1,38 @@
+#!/bin/zsh
+
+#####################################################################
+# This file contains several functions that can be run as tasks
+#
+# In order to run them easily, add the following alias to your shell:
+# > echo "alias task='./taskfile'" >> ~/.zshrc
+#
+# After that, you can run the functions as follows:
+# > task <function_name>
+#####################################################################
+
+# Fail if exit code is not zero, in pipes, and also if variable is not set
+# See: https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/
+set -euo pipefail
+
+setup() {
+  echo "✨ Install gem dependencies"
+  bundle config set path 'vendor/bundle'
+  bundle install
+}
+
+checkDocumentationLinks() {
+  echo "✨ Check that the links contained in *.md files are valid"
+
+  revision=$1
+  cmd="bundle exec awesome_bot \
+    --allow-redirect \
+    --allow-dupe \
+    --skip-save-results \
+    --set-timeout 5 \
+    --base-url https://github.com/pinterest/xchammer/tree/$revision/"
+  
+  eval "${cmd} README.md"
+  eval "${cmd}Docs/ Docs/*.md"
+}
+
+"$@" # Source: https://stackoverflow.com/a/16159057/3203441

@@ -17,7 +17,7 @@ identical.
 
 ## What is XCHammer?
 
-Please see the document, [XCHammer Overview](Docs/XCHammerOverview.md)
+Please see the document, [XCHammer Overview](XCHammerOverview.md)
 
 ## How is XCHammer different than Tulsi?
 
