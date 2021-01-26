@@ -1,0 +1,197 @@
+load('@build_bazel_rules_apple//apple:resources.bzl', 'apple_bundle_import')
+load('@build_bazel_rules_apple//apple:apple.bzl', 'apple_static_framework_import')
+load(
+  "//Vendor/rules_pods/BazelExtensions:extensions.bzl",
+  "acknowledged_target",
+  "gen_module_map",
+  "gen_includes",
+  "headermap"
+)
+# Add a config setting release for compilation mode
+# Assume that people are using `opt` for release mode
+# see the bazel user manual for more information
+# https://docs.bazel.build/versions/master/be/general.html#config_setting
+config_setting(
+  name = "release",
+  values = {
+    "compilation_mode": "opt"
+  }
+)
+config_setting(
+  name = "osxCase",
+  values = {
+    "apple_platform_type": "macos"
+  }
+)
+config_setting(
+  name = "tvosCase",
+  values = {
+    "apple_platform_type": "tvos"
+  }
+)
+config_setting(
+  name = "watchosCase",
+  values = {
+    "apple_platform_type": "watchos"
+  }
+)
+filegroup(
+  name = "GoogleAppIndexing_package_hdrs",
+  srcs = [
+    "GoogleAppIndexing_direct_hdrs"
+  ],
+  visibility = [
+    "//visibility:public"
+  ]
+)
+filegroup(
+  name = "GoogleAppIndexing_direct_hdrs",
+  srcs = glob(
+    glob(
+      [
+        "pod_support/Headers/Public/**/*"
+      ],
+      exclude_directories = 1
+    ) + glob(
+      [
+        "Changelog/**/*.h",
+        "Changelog/**/*.hpp",
+        "Changelog/**/*.hxx"
+      ],
+      exclude_directories = 1
+    ),
+    exclude_directories = 1
+  ),
+  visibility = [
+    "//visibility:public"
+  ]
+)
+filegroup(
+  name = "GoogleAppIndexing_hdrs",
+  srcs = glob(
+    glob(
+      [
+        "pod_support/Headers/Public/**/*"
+      ],
+      exclude_directories = 1
+    ) + glob(
+      [
+        "Changelog/**/*.h",
+        "Changelog/**/*.hpp",
+        "Changelog/**/*.hxx"
+      ],
+      exclude_directories = 1
+    ),
+    exclude_directories = 1
+  ),
+  visibility = [
+    "//visibility:public"
+  ]
+)
+headermap(
+  name = "GoogleAppIndexing_hmap",
+  namespace = "GoogleAppIndexing",
+  hdrs = [
+    "GoogleAppIndexing_package_hdrs",
+    ":GoogleAppIndexing_hdrs"
+  ],
+  deps = [
+    ":GoogleAppIndexing_VendoredFrameworks"
+  ],
+  visibility = [
+    "//visibility:public"
+  ]
+)
+gen_includes(
+  name = "GoogleAppIndexing_includes",
+  include = [
+    "Vendor/GoogleAppIndexing/pod_support/Headers/Public/"
+  ]
+)
+objc_library(
+  name = "GoogleAppIndexing",
+  enable_modules = 1,
+  hdrs = [
+    ":GoogleAppIndexing_hdrs"
+  ],
+  pch = "pod_support/Headers/Private/GoogleAppIndexing-prefix.pch",
+  sdk_frameworks = [
+    "CoreText",
+    "SafariServices"
+  ],
+  deps = [
+    ":GoogleAppIndexing_VendoredFrameworks",
+    ":GoogleAppIndexing_includes"
+  ],
+  copts = [
+    "-Wno-everything",
+    "-Wnon-modular-include-in-framework-module",
+    "-g",
+    "-stdlib=libc++",
+    "-DCOCOAPODS=1",
+    "-DOBJC_OLD_DISPATCH_PROTOTYPES=0",
+    "-fdiagnostics-show-note-include-stack",
+    "-fno-common",
+    "-fembed-bitcode-marker",
+    "-fmessage-length=0",
+    "-fpascal-strings",
+    "-fstrict-aliasing",
+    "-Wno-error=nonportable-include-path"
+  ] + select(
+    {
+      "//conditions:default": [
+        "-DPOD_CONFIGURATION_RELEASE=0"
+      ],
+      ":release": [
+        "-DPOD_CONFIGURATION_RELEASE=1",
+        "-DNS_BLOCK_ASSERTIONS=1"
+      ]
+    }
+  ) + [
+    "-IVendor/GoogleAppIndexing/pod_support/Headers/Public/GoogleAppIndexing/"
+  ] + [
+    "-fmodule-name=GoogleAppIndexing"
+  ],
+  data = [
+    ":GoogleAppIndexing_Bundle_GoogleAppIndexingResources"
+  ],
+  visibility = [
+    "//visibility:public"
+  ]
+)
+acknowledged_target(
+  name = "GoogleAppIndexing_acknowledgement",
+  deps = [],
+  value = "//Vendor/GoogleAppIndexing/pod_support_buildable:acknowledgement_fragment"
+)
+apple_bundle_import(
+  name = "GoogleAppIndexing_Bundle_GoogleAppIndexingResources",
+  bundle_imports = glob(
+    [
+      "Resources/GoogleAppIndexingResources.bundle/**"
+    ],
+    exclude_directories = 1
+  )
+)
+acknowledged_target(
+  name = "GoogleAppIndexing_Bundle_GoogleAppIndexingResources_acknowledgement",
+  deps = [],
+  value = "//Vendor/GoogleAppIndexing/pod_support_buildable:acknowledgement_fragment"
+)
+apple_static_framework_import(
+  name = "GoogleAppIndexing_VendoredFrameworks",
+  framework_imports = glob(
+    [
+      "Frameworks/GoogleAppIndexing.framework/**"
+    ],
+    exclude_directories = 1
+  ),
+  visibility = [
+    "//visibility:public"
+  ]
+)
+acknowledged_target(
+  name = "GoogleAppIndexing_VendoredFrameworks_acknowledgement",
+  deps = [],
+  value = "//Vendor/GoogleAppIndexing/pod_support_buildable:acknowledgement_fragment"
+)

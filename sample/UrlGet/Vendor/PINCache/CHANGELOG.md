@@ -1,6 +1,64 @@
-## master
+# Changelog
 
-* Add your own contributions to the next release on the line below this with your name.
+## [3.0.3](https://github.com/Pinterest/PINCache/tree/3.0.3) (2020-10-22)
+
+[Full Changelog](https://github.com/Pinterest/PINCache/compare/3.0.2...3.0.3)
+
+
+- Update PINOperation to fix imports [\#293](https://github.com/pinterest/PINCache/pull/293) ([garrettmoon](https://github.com/garrettmoon))
+- Add support for automated releases [\#292](https://github.com/pinterest/PINCache/pull/292) ([garrettmoon](https://github.com/garrettmoon))
+- Fix up imports [\#290](https://github.com/pinterest/PINCache/pull/290) ([garrettmoon](https://github.com/garrettmoon))
+- Fix build issues by removing nested PINOperation.xcodeproj [\#282](https://github.com/pinterest/PINCache/pull/282) ([elliottwilliams](https://github.com/elliottwilliams))
+
+## [3.0.2](https://github.com/Pinterest/PINCache/tree/3.0.2) (2020-10-06)
+
+[Full Changelog](https://github.com/Pinterest/PINCache/compare/3.0.1...3.0.2)
+
+**Merged pull requests:**
+
+- Update checkout action [\#287](https://github.com/pinterest/PINCache/pull/287) ([garrettmoon](https://github.com/garrettmoon))
+- Use make commands on the CI so it actually fails [\#286](https://github.com/pinterest/PINCache/pull/286) ([garrettmoon](https://github.com/garrettmoon))
+- Added SPM support [\#283](https://github.com/pinterest/PINCache/pull/283) ([3a4oT](https://github.com/3a4oT))
+- Fix PINCaching compiling in Xcode 12.0b6 \(\#275\) [\#281](https://github.com/pinterest/PINCache/pull/281) ([sagesse-cn](https://github.com/sagesse-cn))
+
+## [3.0.1](https://github.com/Pinterest/PINCache/tree/3.0.1) (2020-08-20)
+
+[Full Changelog](https://github.com/Pinterest/PINCache/compare/3.0.1-beta.8...3.0.1)
+
+**Implemented enhancements:**
+
+- Support Catalyst [\#272](https://github.com/pinterest/PINCache/pull/272) ([cgmaier](https://github.com/cgmaier))
+
+**Merged pull requests:**
+
+- Update PINOperation [\#277](https://github.com/pinterest/PINCache/pull/277) ([garrettmoon](https://github.com/garrettmoon))
+- Fix PINCacheTests compiling in Xcode 12.0b4 [\#276](https://github.com/pinterest/PINCache/pull/276) ([arangato](https://github.com/arangato))
+- Remove BUCK files [\#274](https://github.com/pinterest/PINCache/pull/274) ([adlerj](https://github.com/adlerj))
+- Fix compiling in Xcode 12.0b4 [\#273](https://github.com/pinterest/PINCache/pull/273) ([zacwest](https://github.com/zacwest))
+- Fix the grammar in an assertion failure message [\#270](https://github.com/pinterest/PINCache/pull/270) ([jparise](https://github.com/jparise))
+- Add Carthage for watchOS, fix macOS min deployment target version [\#269](https://github.com/pinterest/PINCache/pull/269) ([dreampiggy](https://github.com/dreampiggy))
+- Remove the unused CI directory [\#265](https://github.com/pinterest/PINCache/pull/265) ([jparise](https://github.com/jparise))
+- Fix up analyze for github CI [\#264](https://github.com/pinterest/PINCache/pull/264) ([garrettmoon](https://github.com/garrettmoon))
+- Use correct class name in NSAssert\(\) messages [\#263](https://github.com/pinterest/PINCache/pull/263) ([jparise](https://github.com/jparise))
+- Check fileURL outside of the locked scope [\#262](https://github.com/pinterest/PINCache/pull/262) ([jparise](https://github.com/jparise))
+- Remove Danger from the project [\#261](https://github.com/pinterest/PINCache/pull/261) ([jparise](https://github.com/jparise))
+- Switch to GitHub Actions for CI [\#259](https://github.com/pinterest/PINCache/pull/259) ([jparise](https://github.com/jparise))
+- Test that the "remove object" blocks are called [\#258](https://github.com/pinterest/PINCache/pull/258) ([jparise](https://github.com/jparise))
+- Discrepancy between Header Comment and Implementation \#trivial [\#257](https://github.com/pinterest/PINCache/pull/257) ([jlaws](https://github.com/jlaws))
+- Optimization `PINMemoryCache` trim to date [\#252](https://github.com/pinterest/PINCache/pull/252) ([kinarobin](https://github.com/kinarobin))
+- Optimize `PINMemoryCache` remove objects when receive memory warning notification [\#251](https://github.com/pinterest/PINCache/pull/251) ([kinarobin](https://github.com/kinarobin))
+
+## 3.0.1 -- Beta 8
+- [fix] Initing PINCache with TTL enabled should enable TTL on PINMemoryCache. [#246](https://github.com/pinterest/PINCache/pull/246)
+- [performance] Return TTL cache objects without waiting for all metadata to be read. [#228](https://github.com/pinterest/PINCache/pull/228)
+- [performance] Memory cache now performs some tasks such as trimming and removing experied objects with low priority. [#234](https://github.com/pinterest/PINCache/pull/234)
+
+## 3.0.1 -- Beta 7
+- [fix] Fix up warnings and upgrade to PINOperation 1.1.1: [#213](https://github.com/pinterest/PINCache/pull/213)
+- [performance] Reduce locking churn in cleanup methods. [#212](https://github.com/pinterest/PINCache/pull/212)
+- [fix] Don't set file protection unless requested. [#220](https://github.com/pinterest/PINCache/pull/220)
+- [new] Add ability to set an object level TTL: [#209](https://github.com/pinterest/PINCache/pull/209)
+- [performance] Improve performance of age limit trimming: [#224](https://github.com/pinterest/PINCache/pull/224)
 
 ## 3.0.1 -- Beta 6
 - [fix] Add some sane limits to the disk cache: [#201]https://github.com/pinterest/PINCache/pull/201

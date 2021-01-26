@@ -7,7 +7,7 @@ new_pod_repository(
 
 new_pod_repository(
   name = "PINCache",
-  url = "https://github.com/pinterest/PINCache/archive/f9f1e551d6a78d74f5528e43a8575f9d2d329e7d.zip",
+  url = "https://github.com/pinterest/PINCache/archive/3.0.3.zip",
   owner = "@ios-cx",
 )
 

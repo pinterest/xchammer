@@ -53,6 +53,10 @@ def _fetch_remote_repo(repository_ctx, repo_tool_bin, target_name, url):
 
 def _link_local_repo(repository_ctx, target_name, url):
     cd = _exec(repository_ctx, ["pwd"]).stdout.split("\n")[0]
+    if url.startswith("/"):
+      url = url
+    else:
+      url = cd + "/" + url
     from_dir = url + "/"
     to_dir = cd + "/"
     all_files = _exec(repository_ctx, ["ls", url]).stdout.split("\n")
@@ -82,6 +86,7 @@ def _impl(repository_ctx):
         # No-op on non-mac platforms, since they won't be able to run the RepoTool binary.
         # While the dependencies/targets inside this pod won't exist or be available on these
         # platforms, you will still at least be able to run things like `bazel query //...`
+        print('No-op on non-macOS platform, repository ' + repository_ctx.attr.target_name + ' will be empty!')
         return
 
     if repository_ctx.attr.trace:
@@ -154,11 +159,28 @@ def _impl(repository_ctx):
     # Build up the script
     script = ""
 
-    # For now, we curl the podspec url before the script runs
     if repository_ctx.attr.podspec_url:
-        script += "curl -O " + repository_ctx.attr.podspec_url
+        # For now, we curl the podspec url before the script runs
+        if repository_ctx.attr.podspec_url.startswith("http"):
+            script += "curl -O " + repository_ctx.attr.podspec_url
+            script += "\n"
+        else:
+            # Dump a podspec into this directory
+            if repository_ctx.attr.podspec_url.startswith("/"):
+                script += "ditto " + repository_ctx.attr.podspec_url + " ."
+                script += "\n"
+            else:
+                workspace_dir = _exec(repository_ctx, ["pwd"]).stdout.split("\n")[0]
+                script += "ditto " + workspace_dir + "/" + repository_ctx.attr.podspec_url + " ."
+                script += "\n"
+    elif repository_ctx.attr.podspec_file:
+        # Note that we can't re-use the podspec_url attribute for this since
+        # that would require being able to determine the root of the main
+        # workspace (to resolve relative paths) which isn't possible in this context.
+        if repository_ctx.attr.podspec_url:
+            fail("Cannot specify both podspec_url and podspec_file")
+        script += "ditto " + str(repository_ctx.path(repository_ctx.attr.podspec_file)) + " ."
         script += "\n"
-
     if repository_ctx.attr.install_script_tpl:
         for sub in substitutions:
             install_script_tpl = install_script_tpl.replace(sub, substitutions[sub])
@@ -176,6 +198,7 @@ pod_repo_ = repository_rule(
         "target_name": attr.string(mandatory=True),
         "url": attr.string(mandatory=True),
         "podspec_url": attr.string(),
+        "podspec_file": attr.label(),
         "strip_prefix": attr.string(),
         "user_options": attr.string_list(),
         "repo_tools_labels": attr.label_list(),
@@ -183,8 +206,8 @@ pod_repo_ = repository_rule(
         "install_script_tpl": attr.string(),
         "inhibit_warnings": attr.bool(default=False, mandatory=True),
         "trace": attr.bool(default=False, mandatory=True),
-        "enable_modules": attr.bool(default=True, mandatory=True),
-        "generate_module_map": attr.bool(default=True, mandatory=True),
+        "enable_modules": attr.bool(default=False, mandatory=True),
+        "generate_module_map": attr.bool(default=False, mandatory=True),
         "header_visibility": attr.string(),
     }
 )
@@ -211,10 +234,12 @@ def new_pod_repository(name,
 
          url: the url of this repo
 
-         podspec_url: the podspec url. By default, we will look in the root of
-         the repository, and read a .podspec file. This requires having
-         CocoaPods installed on build nodes. If a JSON podspec is provided here,
-         then it is not required to run CocoaPods.
+         podspec_url: an override podspec file. Can be either a URL or a Bazel
+         label.
+
+         By default, we will look in the root of the repository, and read a .podspec file.
+         This requires having CocoaPods installed on build nodes. If a JSON podspec is
+         provided here, then it is not required to run CocoaPods.
 
          owner: the owner of this dependency
 
@@ -268,6 +293,11 @@ def new_pod_repository(name,
     if generate_module_map == None:
         generate_module_map = enable_modules
 
+    podspec_file = None
+    if podspec_url and not podspec_url.startswith("http"):
+         podspec_file = podspec_url
+         podspec_url = None
+
     tool_labels = []
     for tool in repo_tools:
         tool_labels.append(tool)
@@ -276,6 +306,7 @@ def new_pod_repository(name,
         target_name=name,
         url=url,
         podspec_url=podspec_url,
+        podspec_file=podspec_file,
         user_options=user_options,
         strip_prefix=strip_prefix,
         install_script_tpl=install_script,
